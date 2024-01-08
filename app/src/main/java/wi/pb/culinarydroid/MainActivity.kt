@@ -1,6 +1,7 @@
 package wi.pb.culinarydroid
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -29,8 +29,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import wi.pb.culinarydroid.ui.theme.CulinaryDroidTheme
+
 
 
 
@@ -41,15 +44,45 @@ class MainActivity : ComponentActivity() {
         setContent {
             CulinaryDroidTheme {
                 val viewModel: MainViewModel = viewModel()
-                RandomRecipeScreen(viewModel)
+                var showRecipeScreen by remember { mutableStateOf(false) }
+
+                if (showRecipeScreen) {
+                    val recipe = viewModel.recipes
+                    if (recipe != null) {
+                        Log.d("MainActivity", "Recipe received: $recipe")
+                        RecipeScreen(
+                            recipe = recipe,
+                            onBack = { showRecipeScreen = false }
+                        )
+                    } else {
+                        Log.e("MainActivity", "Recipe is null")
+                        Text("Error loading recipe")
+                    }
+                } else {
+                    RandomRecipeScreen {
+                        viewModel.viewModelScope.launch {
+                            val recipe = viewModel.getRandomRecipes(it.includeTags, it.excludeTags)
+                            viewModel.recipes = recipe
+                            if (recipe != null) {
+                                showRecipeScreen = true
+                            } else {
+                                Log.e("error recipe", "Recipe is null in RandomRecipeScreen")
+                            }
+                        }
+                    }
+
+
+                }
             }
         }
     }
 }
 
+
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RandomRecipeScreen(viewModel: MainViewModel = viewModel()) {
+fun RandomRecipeScreen(onSearch: (SearchParameters) -> Unit) {
     var includeTags by remember { mutableStateOf("") }
     var excludeTags by remember { mutableStateOf("") }
 
@@ -70,7 +103,7 @@ fun RandomRecipeScreen(viewModel: MainViewModel = viewModel()) {
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
-                    viewModel.getRandomRecipes(includeTags, excludeTags)
+                    onSearch(SearchParameters(includeTags, excludeTags))
                 }
             ),
             modifier = Modifier
@@ -88,7 +121,7 @@ fun RandomRecipeScreen(viewModel: MainViewModel = viewModel()) {
             keyboardActions = KeyboardActions(
                 onDone = {
                     keyboardController?.hide()
-                    viewModel.getRandomRecipes(includeTags, excludeTags)
+                    onSearch(SearchParameters(includeTags, excludeTags))
                 }
             ),
             modifier = Modifier
@@ -99,7 +132,8 @@ fun RandomRecipeScreen(viewModel: MainViewModel = viewModel()) {
         // Przycisk do rozpoczęcia wyszukiwania
         Button(
             onClick = {
-                viewModel.getRandomRecipes(includeTags, excludeTags)
+                Log.d("RandomRecipeScreen", "Search clicked. includeTags: $includeTags, excludeTags: $excludeTags")
+                onSearch(SearchParameters(includeTags, excludeTags))
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -109,31 +143,10 @@ fun RandomRecipeScreen(viewModel: MainViewModel = viewModel()) {
             Spacer(modifier = Modifier.width(8.dp))
             Text("Search Recipes")
         }
-
-        // Miejsce do wyświetlenia wyników
-        Text(
-            text = viewModel.recipes,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
-
-
-
-//@Composable
-//fun getRecipes(includeTags: String, excludeTags: String): String {
-//    return try {
-//        val apiClient = ApiClient()
-//        apiClient.getRandomRecipes("34cfa6fd6e2c40c2ae274ff7117435c5", 1, includeTags, excludeTags)
-//    } catch (e: IOException) {
-//        "Error fetching recipes: ${e.message}"
-//    }
-//}
-
-@Composable
-fun DefaultPreview() {
-    MaterialTheme {
-        RandomRecipeScreen()
-    }
-}
+data class SearchParameters(
+    val includeTags: String,
+    val excludeTags: String
+)
