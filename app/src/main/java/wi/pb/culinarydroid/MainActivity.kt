@@ -35,8 +35,6 @@ import kotlinx.coroutines.launch
 import wi.pb.culinarydroid.ui.theme.CulinaryDroidTheme
 
 
-
-
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +75,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -132,7 +129,10 @@ fun RandomRecipeScreen(onSearch: (SearchParameters) -> Unit) {
         // Przycisk do rozpoczęcia wyszukiwania
         Button(
             onClick = {
-                Log.d("RandomRecipeScreen", "Search clicked. includeTags: $includeTags, excludeTags: $excludeTags")
+                Log.d(
+                    "RandomRecipeScreen",
+                    "Search clicked. includeTags: $includeTags, excludeTags: $excludeTags"
+                )
                 onSearch(SearchParameters(includeTags, excludeTags))
             },
             modifier = Modifier
