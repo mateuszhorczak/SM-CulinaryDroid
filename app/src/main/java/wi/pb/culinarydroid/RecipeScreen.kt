@@ -150,7 +150,6 @@ fun RecipeScreen(recipe: Recipe, onBack: () -> Unit) {
                     modifier = Modifier
                         .padding(start = 16.dp)
                 )
-                // ... Dodaj więcej informacji, jeśli są dostępne
             }
         }
     }
