@@ -11,7 +11,12 @@ import okhttp3.Request
 class ApiClient {
     private val client = OkHttpClient()
 
-    suspend fun getRandomRecipes(apiKey: String, number: Int, includeTags: String, excludeTags: String): Recipe? {
+    suspend fun getRandomRecipes(
+        apiKey: String,
+        number: Int,
+        includeTags: String,
+        excludeTags: String
+    ): Recipe? {
         return withContext(Dispatchers.IO) {
             val url = "https://api.spoonacular.com/recipes/random"
             val response = client.newCall(
@@ -47,7 +52,6 @@ class ApiClient {
             null
         }
     }
-
 
 
 }

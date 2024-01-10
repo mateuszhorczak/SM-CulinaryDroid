@@ -49,7 +49,7 @@ class Recipe(
     val spoonacularSourceUrl: String,
 
 
-)
+    )
 
 @Serializable
 class ExtendedIngredient(
@@ -114,7 +114,6 @@ class Length(
     val number: Int,
     val unit: String
 )
-
 
 
 fun sampleRecipe(): Recipe {

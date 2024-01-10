@@ -7,7 +7,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import kotlin.math.sqrt
 
-class ShakeDetector(private val context: Context, private val onShake: () -> Unit) : SensorEventListener {
+class ShakeDetector(private val context: Context, private val onShake: () -> Unit) :
+    SensorEventListener {
 
     private var lastX: Float = 0.0f
     private var lastY: Float = 0.0f
@@ -38,7 +39,8 @@ class ShakeDetector(private val context: Context, private val onShake: () -> Uni
             val y = event.values[1]
             val z = event.values[2]
 
-            val speed = sqrt((x - lastX) * (x - lastX) + (y - lastY) * (y - lastY) + (z - lastZ) * (z - lastZ)) / diffTime * 10000
+            val speed =
+                sqrt((x - lastX) * (x - lastX) + (y - lastY) * (y - lastY) + (z - lastZ) * (z - lastZ)) / diffTime * 10000
 
             if (speed > shakeThreshold) {
                 onShake.invoke()
