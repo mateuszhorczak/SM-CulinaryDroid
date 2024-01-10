@@ -41,7 +41,6 @@ class ApiClient {
         return try {
             val json = Json { ignoreUnknownKeys = true }
             val recipeWrapper = json.decodeFromString<RecipeWrapper>(jsonString)
-            Log.e("sda", "adsassdfa")
             recipeWrapper.recipes?.firstOrNull()
         } catch (e: Exception) {
             Log.e("ApiClient", "Error parsing JSON: $jsonString", e)
