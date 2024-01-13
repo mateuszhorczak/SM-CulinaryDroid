@@ -20,7 +20,7 @@ class MainViewModel : ViewModel() {
         return try {
             val apiClient = ApiClient()
             recipe = apiClient.getRandomRecipe(
-                "34cfa6fd6e2c40c2ae274ff7117435c5",
+                "YOUR SPOONACULAR API KEY", // get it here https://spoonacular.com/food-api
                 1,
                 includeTags,
                 excludeTags
