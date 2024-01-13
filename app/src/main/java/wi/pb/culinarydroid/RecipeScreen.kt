@@ -23,67 +23,131 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
-fun RecipeScreen(recipe: Recipe, onBack: () -> Unit) {
-    Log.d("RecipeScreen", "Recipe: $recipe")
+fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
+    val recipe = viewModel.recipe
+    Log.e("RecipeScreen", "Recipeeee: $recipe")
+    if (recipe != null) {
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        // Przycisk powrotu
-        item {
-            Button(
-                onClick = onBack,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-            ) {
-                Text("Back to Search")
+        Log.d("RecipeScreen", "Recipe: $recipe")
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Przycisk powrotu
+            item {
+                Button(
+                    onClick = onBack,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text("Back to Search")
+                }
             }
-        }
 
-        // Obrazek przepisu
-        item {
-            Image(
-                painter = rememberAsyncImagePainter(model = recipe.image),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-            )
-        }
+            // Obrazek przepisu
+            item {
+                Image(
+                    painter = rememberAsyncImagePainter(model = recipe.image),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
+            }
 
-        // Informacje o przepisie
-        item {
-            Text(
-                text = recipe.title,
-                style = TextStyle(
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier
-                    .padding(top = 8.dp)
-            )
-        }
-        // Składniki
-        item {
-            Text(
-                text = "Ingredients:",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-                modifier = Modifier
-                    .padding(top = 16.dp)
-            )
-            recipe.extendedIngredients?.let { ingredients ->
-                ingredients.forEach { ingredient ->
+            // Informacje o przepisie
+            item {
+                Text(
+                    text = recipe.title,
+                    style = TextStyle(
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                )
+            }
+            // Składniki
+            item {
+                Text(
+                    text = "Ingredients:",
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                )
+                recipe.extendedIngredients?.let { ingredients ->
+                    ingredients.forEach { ingredient ->
+                        Text(
+                            text = "- ${ingredient.original}",
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                            ),
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                    }
+                }
+            }
+
+            // Wyświetlanie kroków instrukcji
+            item {
+                Text(
+                    text = "Instructions:",
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                )
+                recipe.analyzedInstructions?.let { instructions ->
+                    instructions.forEach { analyzedInstruction ->
+                        AnalyzedInstructionCard(analyzedInstruction)
+                    }
+                }
+            }
+
+            // Dodatkowe informacje o przepisie
+            item {
+                Text(
+                    text = "Additional Information:",
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                )
+                Column {
                     Text(
-                        text = "- ${ingredient.original}",
+                        text = "Servings: ${recipe.servings}",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                        ),
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                    )
+                    Text(
+                        text = "Ready in minutes: ${recipe.readyInMinutes}",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                        ),
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                    )
+                    Text(
+                        text = "Health Score: ${recipe.healthScore}",
                         style = TextStyle(
                             fontSize = 20.sp,
                         ),
@@ -93,65 +157,9 @@ fun RecipeScreen(recipe: Recipe, onBack: () -> Unit) {
                 }
             }
         }
-
-        // Wyświetlanie kroków instrukcji
-        item {
-            Text(
-                text = "Instructions:",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-                modifier = Modifier
-                    .padding(top = 16.dp)
-            )
-            recipe.analyzedInstructions?.let { instructions ->
-                instructions.forEach { analyzedInstruction ->
-                    AnalyzedInstructionCard(analyzedInstruction)
-                }
-            }
-        }
-
-        // Dodatkowe informacje o przepisie
-        item {
-            Text(
-                text = "Additional Information:",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-                modifier = Modifier
-                    .padding(top = 16.dp)
-            )
-            Column {
-                Text(
-                    text = "Servings: ${recipe.servings}",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                    ),
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                )
-                Text(
-                    text = "Ready in minutes: ${recipe.readyInMinutes}",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                    ),
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                )
-                Text(
-                    text = "Health Score: ${recipe.healthScore}",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                    ),
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                )
-            }
-        }
+    } else {
+        Log.e("RecipeScreen", "Recipe is null")
+        Text("Error loading recipe, check your internet connection")
     }
 }
 

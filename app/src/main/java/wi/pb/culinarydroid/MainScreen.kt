@@ -126,6 +126,7 @@ fun MainScreen(onSearch: (SearchParameters) -> Unit, onNavigateToWheelScreen: ()
             Spacer(modifier = Modifier.width(8.dp))
             Text("Spin the Wheel")
         }
+        val shake = ShakeDetector(MainActivity.getInstance(), onNavigateToWheelScreen)
     }
 }
 

@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -13,9 +16,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import wi.pb.culinarydroid.ui.theme.CulinaryDroidTheme
+import java.util.UUID
 
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private lateinit var instance: MainActivity
+        fun getInstance(): MainActivity {
+            return instance
+        }
+
+    }
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +34,7 @@ class MainActivity : ComponentActivity() {
             CulinaryDroidTheme {
                 val viewModel: MainViewModel = viewModel()
                 val navController = rememberNavController()
-
+                var wheelScreenKey by remember { mutableStateOf(UUID.randomUUID().toString()) }
                 NavHost(
                     navController = navController,
                     startDestination = "main_screen"
@@ -32,8 +43,8 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             onSearch = { searchParameters ->
                                 viewModel.viewModelScope.launch {
-                                    val recipe = viewModel.getRandomRecipes(searchParameters.includeTags, searchParameters.excludeTags)
-                                    viewModel.recipes = recipe
+                                    val recipe = viewModel.getRandomRecipe(searchParameters.includeTags, searchParameters.excludeTags)
+                                    viewModel.recipe = recipe
                                     if (recipe != null) {
                                         navController.navigate("recipe_screen")
                                     } else {
@@ -42,30 +53,42 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             onNavigateToWheelScreen = {
+                                // Generuj nowy unikalny klucz dla WheelScreen
+                                wheelScreenKey = UUID.randomUUID().toString()
                                 navController.navigate("wheel_screen")
                             }
                         )
                     }
 
                     composable("recipe_screen") {
-                        val recipe = viewModel.recipes
-                        if (recipe != null) {
-                            RecipeScreen(
-                                recipe = recipe,
-                                onBack = { navController.popBackStack() }
-                            )
-                        } else {
-                            Log.e("MainActivity", "Recipe is null")
-                            Text("Error loading recipe")
-                        }
+                        RecipeScreen(
+                            viewModel = viewModel,
+                            onBack = { navController.navigate("main_screen") }
+                        )
                     }
 
                     composable("wheel_screen") {
-                        WheelScreen()
+                        WheelScreen(
+                            viewModel = viewModel,
+                            onBack = {
+                                navController.navigate("main_screen")
+                                     },
+                            onNavigateToRecipeScreen = { recipe ->
+                                if (recipe != null) {
+                                    navController.navigate("recipe_screen")
+                                } else {
+                                    Log.e("MainActivity", "Recipe is null")
+                                }
+                            },
+                            // Przekazanie unikalnego klucza do WheelScreen
+                        )
                     }
+
                 }
             }
         }
+        instance = this
+
     }
 }
 

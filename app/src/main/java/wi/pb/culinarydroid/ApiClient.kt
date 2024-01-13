@@ -11,7 +11,7 @@ import okhttp3.Request
 class ApiClient {
     private val client = OkHttpClient()
 
-    suspend fun getRandomRecipes(
+    suspend fun getRandomRecipe(
         apiKey: String,
         number: Int,
         includeTags: String,
@@ -44,8 +44,17 @@ class ApiClient {
         }
 
         return try {
-            val json = Json { ignoreUnknownKeys = true }
+            val json = Json {
+                ignoreUnknownKeys = true
+                coerceInputValues = true
+            }
+            Log.d("ApiClient", "Deserializacja JSON: $jsonString")
             val recipeWrapper = json.decodeFromString<RecipeWrapper>(jsonString)
+            Log.d("ApiClient", "RecipeWrapper: $recipeWrapper")
+            val recipe = recipeWrapper.recipes?.firstOrNull()
+            Log.d("ApiClient", "Recipe: $recipe")
+
+//            val recipeWrapper = json.decodeFromString<RecipeWrapper>(jsonString)
             recipeWrapper.recipes?.firstOrNull()
         } catch (e: Exception) {
             Log.e("ApiClient", "Error parsing JSON: $jsonString", e)

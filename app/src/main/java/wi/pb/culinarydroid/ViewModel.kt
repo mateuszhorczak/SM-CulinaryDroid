@@ -10,13 +10,14 @@ import java.io.IOException
 
 class MainViewModel : ViewModel() {
 
-    var recipes by mutableStateOf<Recipe?>(null)
+    var recipe by mutableStateOf<Recipe?>(null)
 
-    suspend fun getRandomRecipes(includeTags: String, excludeTags: String): Recipe? {
-        Log.d("MainViewModel", "Getting random recipes. Include tags: $includeTags, Exclude tags: $excludeTags")
+    suspend fun getRandomRecipe(includeTags: String, excludeTags: String): Recipe? {
+        Log.d("MainViewModel", "Getting random recipe. Include tags: $includeTags, Exclude tags: $excludeTags")
         return try {
             val apiClient = ApiClient()
-            apiClient.getRandomRecipes("34cfa6fd6e2c40c2ae274ff7117435c5", 1, includeTags, excludeTags)
+            recipe = apiClient.getRandomRecipe("34cfa6fd6e2c40c2ae274ff7117435c5", 1, includeTags, excludeTags)
+            recipe
         } catch (e: IOException) {
             Log.e("MainViewModel", "IOException: $e")
             null
@@ -25,6 +26,11 @@ class MainViewModel : ViewModel() {
             null
         }
     }
+
+    fun updateRecipe(recipe: Recipe?) {
+        this.recipe = recipe
+    }
+
 }
 
 
