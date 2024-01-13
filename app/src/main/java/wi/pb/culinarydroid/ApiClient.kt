@@ -48,13 +48,10 @@ class ApiClient {
                 ignoreUnknownKeys = true
                 coerceInputValues = true
             }
-            Log.d("ApiClient", "Deserializacja JSON: $jsonString")
+            Log.d("ApiClient", "Deserialization JSON: $jsonString")
             val recipeWrapper = json.decodeFromString<RecipeWrapper>(jsonString)
-            Log.d("ApiClient", "RecipeWrapper: $recipeWrapper")
             val recipe = recipeWrapper.recipes?.firstOrNull()
             Log.d("ApiClient", "Recipe: $recipe")
-
-//            val recipeWrapper = json.decodeFromString<RecipeWrapper>(jsonString)
             recipeWrapper.recipes?.firstOrNull()
         } catch (e: Exception) {
             Log.e("ApiClient", "Error parsing JSON: $jsonString", e)

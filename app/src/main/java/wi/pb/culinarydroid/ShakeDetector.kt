@@ -16,7 +16,7 @@ class ShakeDetector(private val context: Context, private val onShake: () -> Uni
 
     private var lastUpdate: Long = 0
 
-    private val shakeThreshold = 800 // Wartość prógu potrząsania, można dostosować
+    private val shakeThreshold = 800 // Shaking threshold value
 
     init {
         val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -25,7 +25,7 @@ class ShakeDetector(private val context: Context, private val onShake: () -> Uni
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Niepotrzebne w tym przypadku
+        // Not necessary in this case
     }
 
     override fun onSensorChanged(event: SensorEvent) {

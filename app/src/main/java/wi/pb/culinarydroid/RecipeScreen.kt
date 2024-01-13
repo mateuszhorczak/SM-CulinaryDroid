@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -25,7 +24,6 @@ import coil.compose.rememberAsyncImagePainter
 @Composable
 fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
     val recipe = viewModel.recipe
-    Log.e("RecipeScreen", "Recipeeee: $recipe")
     if (recipe != null) {
 
         Log.d("RecipeScreen", "Recipe: $recipe")
@@ -36,7 +34,7 @@ fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Przycisk powrotu
+            // Return to main screen button
             item {
                 Button(
                     onClick = onBack,
@@ -48,7 +46,7 @@ fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                 }
             }
 
-            // Obrazek przepisu
+            // Recipe image
             item {
                 Image(
                     painter = rememberAsyncImagePainter(model = recipe.image),
@@ -60,7 +58,7 @@ fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                 )
             }
 
-            // Informacje o przepisie
+            // Recipe information
             item {
                 Text(
                     text = recipe.title,
@@ -72,7 +70,7 @@ fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                         .padding(top = 8.dp)
                 )
             }
-            // Składniki
+            // Ingredients
             item {
                 Text(
                     text = "Ingredients:",
@@ -98,7 +96,7 @@ fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                 }
             }
 
-            // Wyświetlanie kroków instrukcji
+            // Instructions steps
             item {
                 Text(
                     text = "Instructions:",
@@ -117,7 +115,7 @@ fun RecipeScreen(viewModel: MainViewModel, onBack: () -> Unit) {
                 }
             }
 
-            // Dodatkowe informacje o przepisie
+            // Additional information about the recipe
             item {
                 Text(
                     text = "Additional Information:",
@@ -170,7 +168,7 @@ fun AnalyzedInstructionCard(analyzedInstruction: AnalyzedInstruction) {
             .fillMaxWidth()
             .padding(start = 12.dp, end = 12.dp)
     ) {
-        // Wyświetlanie nazwy instrukcji
+        // Display the name of the instruction
         Text(
             text = analyzedInstruction.name,
             style = TextStyle(
@@ -180,7 +178,7 @@ fun AnalyzedInstructionCard(analyzedInstruction: AnalyzedInstruction) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Wyświetlanie listy kroków
+        // Display a list of steps
         analyzedInstruction.steps.forEach { step ->
             InstructionStepCard(step)
         }
@@ -194,35 +192,33 @@ fun InstructionStepCard(step: InstructionStep) {
             .fillMaxWidth()
             .padding(bottom = 8.dp)
     ) {
-        // Wyświetlanie numeru kroku
+        // Display step number
         Text(
             text = "Step ${step.number}:",
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = contentColorFor(MaterialTheme.colorScheme.background)
+                color = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
-        // Wyświetlanie treści kroku
+        // Display step instruction content
         Text(
             text = step.step,
             style = TextStyle(
                 fontSize = 20.sp,
-                color = contentColorFor(MaterialTheme.colorScheme.background)
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Wyświetlanie składników
+        // Display ingredients
         if (step.ingredients.isNotEmpty()) {
             Text(
                 text = "Ingredients:",
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = contentColorFor(MaterialTheme.colorScheme.background)
                 ),
                 modifier = Modifier.padding(bottom = 4.dp)
             )
@@ -231,21 +227,19 @@ fun InstructionStepCard(step: InstructionStep) {
                     text = "- ${ingredient.name}",
                     style = TextStyle(
                         fontSize = 20.sp,
-                        color = contentColorFor(MaterialTheme.colorScheme.background)
                     ),
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
         }
 
-        // Wyświetlanie sprzętu
+        // Display Equipment
         if (step.equipment.isNotEmpty()) {
             Text(
                 text = "Equipment:",
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = contentColorFor(MaterialTheme.colorScheme.background)
                 ),
                 modifier = Modifier.padding(bottom = 4.dp)
             )
@@ -254,20 +248,18 @@ fun InstructionStepCard(step: InstructionStep) {
                     text = "- ${equipment.name}",
                     style = TextStyle(
                         fontSize = 20.sp,
-                        color = contentColorFor(MaterialTheme.colorScheme.background)
                     ),
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
         }
 
-        // Wyświetlanie długości przygotowania (jeśli dostępne)
+        // Display preparation length (if available)
         step.length?.let {
             Text(
                 text = "Cooking Time: ${it.number} ${it.unit}",
                 style = TextStyle(
                     fontSize = 20.sp,
-                    color = contentColorFor(MaterialTheme.colorScheme.background)
                 ),
                 modifier = Modifier.padding(top = 8.dp)
             )

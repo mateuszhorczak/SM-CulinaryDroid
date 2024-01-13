@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,17 +44,23 @@ class MainActivity : ComponentActivity() {
                         MainScreen(
                             onSearch = { searchParameters ->
                                 viewModel.viewModelScope.launch {
-                                    val recipe = viewModel.getRandomRecipe(searchParameters.includeTags, searchParameters.excludeTags)
+                                    val recipe = viewModel.getRandomRecipe(
+                                        searchParameters.includeTags,
+                                        searchParameters.excludeTags
+                                    )
                                     viewModel.recipe = recipe
                                     if (recipe != null) {
                                         navController.navigate("recipe_screen")
                                     } else {
-                                        Log.e("error recipe", "Recipe is null in RandomRecipeScreen")
+                                        Log.e(
+                                            "error recipe",
+                                            "Recipe is null in RandomRecipeScreen"
+                                        )
                                     }
                                 }
                             },
                             onNavigateToWheelScreen = {
-                                // Generuj nowy unikalny klucz dla WheelScreen
+                                // Generate a new unique key for WheelScreen
                                 wheelScreenKey = UUID.randomUUID().toString()
                                 navController.navigate("wheel_screen")
                             }
@@ -72,7 +79,7 @@ class MainActivity : ComponentActivity() {
                             viewModel = viewModel,
                             onBack = {
                                 navController.navigate("main_screen")
-                                     },
+                            },
                             onNavigateToRecipeScreen = { recipe ->
                                 if (recipe != null) {
                                     navController.navigate("recipe_screen")
@@ -80,7 +87,6 @@ class MainActivity : ComponentActivity() {
                                     Log.e("MainActivity", "Recipe is null")
                                 }
                             },
-                            // Przekazanie unikalnego klucza do WheelScreen
                         )
                     }
 

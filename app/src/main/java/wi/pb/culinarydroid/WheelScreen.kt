@@ -1,6 +1,5 @@
 package wi.pb.culinarydroid
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,7 +32,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun WheelScreen(viewModel: MainViewModel, onBack: () -> Unit, onNavigateToRecipeScreen: (Recipe?) -> Unit) {
+fun WheelScreen(
+    viewModel: MainViewModel,
+    onBack: () -> Unit,
+    onNavigateToRecipeScreen: (Recipe?) -> Unit
+) {
     var rotationState by remember { mutableFloatStateOf(0f) }
     var rotation by remember { mutableFloatStateOf(0f) }
 
@@ -49,14 +52,13 @@ fun WheelScreen(viewModel: MainViewModel, onBack: () -> Unit, onNavigateToRecipe
                 elapsedTime += 16
             }
 
-            // Po 3 sekundach pobierz przepis
+            // After 3 seconds, get the recipe from API
             val recipe = viewModel.getRandomRecipe("", "")
-            Log.e("WheelScreen", "Nazwa przepisu: ${recipe?.title}")
 
-            // Zaktualizuj stan przepisu w viewModel
+            // Update recipe status in viewModel
             viewModel.updateRecipe(recipe)
 
-            // Otwórz ekran RecipeScreen
+            // Open the RecipeScreen
             onNavigateToRecipeScreen(recipe)
         }
     }
@@ -75,7 +77,7 @@ fun WheelScreen(viewModel: MainViewModel, onBack: () -> Unit, onNavigateToRecipe
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Losowanie przepisu",
+            text = "Recipe draw",
             fontSize = 31.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Magenta

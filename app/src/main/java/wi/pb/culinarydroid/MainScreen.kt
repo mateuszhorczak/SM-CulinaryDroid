@@ -1,9 +1,6 @@
 package wi.pb.culinarydroid
 
 import android.util.Log
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,18 +35,6 @@ fun MainScreen(onSearch: (SearchParameters) -> Unit, onNavigateToWheelScreen: ()
     var excludeTags by remember { mutableStateOf("") }
 
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    var isWheelSpinning by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf<String?>(null) }
-
-    // Animacja obrotu koła
-    val rotationAngle by animateFloatAsState(
-        targetValue = if (isWheelSpinning) 360f else 0f,
-        tween(
-            durationMillis = 1500,
-            easing = FastOutSlowInEasing
-        ), label = "Rotation angleeeee"
-    )
 
     Column(
         modifier = Modifier
@@ -92,7 +77,7 @@ fun MainScreen(onSearch: (SearchParameters) -> Unit, onNavigateToWheelScreen: ()
                 .padding(bottom = 8.dp)
         )
 
-        // Przycisk do rozpoczęcia wyszukiwania
+        // Button to start searching
         Button(
             onClick = {
                 Log.d(
@@ -111,7 +96,7 @@ fun MainScreen(onSearch: (SearchParameters) -> Unit, onNavigateToWheelScreen: ()
         }
 
 
-        // Przycisk do Losowania
+        // Fortune wheel draw button
         Button(
             onClick = onNavigateToWheelScreen,
             modifier = Modifier

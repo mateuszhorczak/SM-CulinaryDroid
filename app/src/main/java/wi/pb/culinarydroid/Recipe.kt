@@ -18,7 +18,7 @@ class Recipe(
     val servings: Int,
     val readyInMinutes: Int,
     val healthScore: Double,
-    )
+)
 
 @Serializable
 class ExtendedIngredient(
